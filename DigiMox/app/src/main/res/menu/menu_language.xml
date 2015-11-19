@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".DMLoginActivity">
+
+    <item
+        android:id="@+id/english"
+        android:title="@string/english"
+        android:visible="true" />
+    <item
+        android:id="@+id/arabic"
+        android:title="@string/arabic"
+        android:visible="true" />
+</menu>
