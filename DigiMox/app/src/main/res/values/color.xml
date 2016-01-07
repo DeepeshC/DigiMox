@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="window_background">#FFF5F5F5</color>
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
     <color name="bg_color">#333333</color>
     <color name="blue_color">#33b5e6</color>
     <color name="black_gray">#2c2b2a</color>
+    <color name="green_bg">#00a550</color>
+    <color name="background_bg">#FFF5F5F5</color>
+    <color name="aed_color">#dd2425</color>
+    <color name="next_item_color">#66c895</color>
+    <color name="sub_list_divider">#0274b3</color>
 </resources>

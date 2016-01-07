@@ -1,8 +1,48 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="Theme.DesignDemo" parent="Base.Theme.DesignDemo">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- other attributes -->
+        <item name="textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge
+        </item>
+
+        <item name="textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall
+        </item>
+
+        <item name="popupMenuStyle">@style/myPopupMenuStyle</item>
+        <item name="android:popupMenuStyle">@style/myPopupMenuStyle</item>
     </style>
 
+    <style name="myPopupMenuStyle" parent="@style/Widget.AppCompat.ListPopupWindow">
+        <item name="android:divider">@color/white</item>
+        <item name="android:popupBackground">@color/green_bg</item>
+        <item name="android:dropDownSelector">@drawable/edit_text_bg</item>
+    </style>
+
+    <style name="myPopupMenuTextAppearanceSmall" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="myPopupMenuTextAppearanceLarge" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+
+    <style name="PopupMenu" parent="android:Widget.PopupMenu">
+        <item name="android:popupBackground">#6b6b6b</item>
+        <item name="android:color">#6b6b6b</item>
+    </style>
+
+    <style name="diamond_rating" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_layer_list</item>
+        <item name="android:numStars">5</item>
+        <item name="android:rating">0</item>
+        <item name="android:stepSize">1</item>
+    </style>
 </resources>

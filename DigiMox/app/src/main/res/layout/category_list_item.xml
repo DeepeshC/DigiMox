@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<com.digimox.views.DMSquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="@drawable/product_place_holder">
 
-    <ImageView
-        android:id="@+id/categoryImage"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_centerInParent="true"
-        android:layout_margin="10dp"
-        android:scaleType="fitXY" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/categoryImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:scaleType="fitXY" />
+
+        <ProgressBar
+            android:id="@+id/progress_main_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
     <TextView
+        android:id="@+id/category_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/categoryImage"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
+        android:background="@drawable/edit_text_bg"
+        android:gravity="center"
         android:text="CATEGORY"
-        android:textColor="@color/black" />
-</RelativeLayout>
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+</com.digimox.views.DMSquareRelativeLayout>

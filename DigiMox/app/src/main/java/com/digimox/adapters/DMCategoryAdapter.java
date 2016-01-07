@@ -1,31 +1,37 @@
 package com.digimox.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.digimox.DMSubDishActivity;
 import com.digimox.R;
+import com.digimox.fragments.DMMainCategoryFragment;
+import com.digimox.models.response.DMMainCategory;
+import com.digimox.utils.DMUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by Deepesh on 23-Aug-15.
  */
 public class DMCategoryAdapter extends RecyclerView.Adapter<DMCategoryAdapter.ViewHolder> {
     private final TypedValue mTypedValue = new TypedValue();
-
-    private int mBackground;
-    //    private ArrayList<AQProductModel> aqProductModels;
     private Context context;
     private OnItemClickListener mItemClickListener;
-    private int[] categoryImage = {R.drawable.cat_1, R.drawable.cat_2, R.drawable.cat_3, R.drawable.cat_4, R.drawable.cat_5, R.drawable.cat_6, R.drawable.cat_7};
+    private DMMainCategoryFragment dmMainCategoryFragment;
+    private ArrayList<DMMainCategory> dmMainCategories;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView categoryImage;
+        private TextView categoryName;
+        private ProgressBar mainCategoryProgress;
         private View mView;
 
         public ViewHolder(View view) {
@@ -33,6 +39,8 @@ public class DMCategoryAdapter extends RecyclerView.Adapter<DMCategoryAdapter.Vi
             this.mView = view;
             view.setOnClickListener(this);
             categoryImage = (ImageView) view.findViewById(R.id.categoryImage);
+            categoryName = (TextView) view.findViewById(R.id.category_name);
+            mainCategoryProgress = (ProgressBar) view.findViewById(R.id.progress_main_category);
 
         }
 
@@ -53,10 +61,11 @@ public class DMCategoryAdapter extends RecyclerView.Adapter<DMCategoryAdapter.Vi
         this.mItemClickListener = mItemClickListener;
     }
 
-    public DMCategoryAdapter(Context context) {
+    public DMCategoryAdapter(Context context, DMMainCategoryFragment dmMainCategoryFragment, ArrayList<DMMainCategory> dmMainCategories) {
         context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
-        mBackground = mTypedValue.resourceId;
         this.context = context;
+        this.dmMainCategoryFragment = dmMainCategoryFragment;
+        this.dmMainCategories = dmMainCategories;
     }
 
     @Override
@@ -68,23 +77,28 @@ public class DMCategoryAdapter extends RecyclerView.Adapter<DMCategoryAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.categoryImage.setImageResource(categoryImage[position]);
+        final DMMainCategory dmMainCategory = dmMainCategories.get(position);
+        if (!TextUtils.isEmpty(dmMainCategory.getGroupImage())) {
+            DMUtils.setImageUrlToView(context, holder.categoryImage, dmMainCategory.getGroupImage(), holder.mainCategoryProgress);
+        }
+        holder.categoryName.setText(dmMainCategory.getGroupName());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToSubCategory();
+                goToSubCategory(dmMainCategory, position);
             }
         });
 
+
     }
 
-    private void goToSubCategory() {
-        context.startActivity(new Intent(context, DMSubDishActivity.class));
+    private void goToSubCategory(DMMainCategory dmMainCategory, int position) {
+        dmMainCategoryFragment.clickMainCategory(dmMainCategories, dmMainCategory, position);
     }
 
     @Override
     public int getItemCount() {
-        return 6;
+        return dmMainCategories.size();
     }
 
 }

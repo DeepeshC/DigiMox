@@ -2,18 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    tools:context=".DMLoginActivity">
+    android:background="@drawable/login_bg"
+    tools:context=".activity.DMLoginActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/login_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:text="LOGIN"
-        android:textColor="@color/white"
-        android:textSize="25dp" />
 
     <LinearLayout
         android:id="@+id/login_layout"
@@ -22,46 +13,66 @@
         android:layout_centerInParent="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <EditText
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/login_logo" />
+
+        <com.digimox.views.DMLoginEditText
             android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white"
+            android:background="@drawable/edit_text_bg"
+            android:drawableLeft="@drawable/user_name_edt"
+            android:drawablePadding="10dp"
             android:hint="@string/enter_user_name"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textColor="@color/black_gray" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
 
-        <EditText
+        <com.digimox.views.DMLoginEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
-            android:background="@color/white"
+            android:background="@drawable/edit_text_bg"
+            android:drawableLeft="@drawable/password_edt"
+            android:drawablePadding="10dp"
             android:hint="@string/enter_password"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:inputType="textPassword"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textColor="@color/black_gray" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
 
         <TextView
             android:id="@+id/language_select"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@color/blue_color"
+            android:drawableLeft="@drawable/language"
+            android:drawablePadding="10dp"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:text="@string/select_language"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/sign_in"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
-            android:background="@color/blue_color"
+            android:background="@color/green_bg"
             android:text="@string/login"
             android:textColor="@color/white" />
     </LinearLayout>
