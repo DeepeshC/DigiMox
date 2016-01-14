@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -17,18 +21,28 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.digimox.R;
+import com.digimox.api.DMApiManager;
 import com.digimox.app.DMAppConstants;
 import com.digimox.models.response.DMCurrency;
 import com.digimox.models.response.DMLanguage;
 import com.digimox.models.response.DMUserDetails;
 import com.digimox.utils.DMDataBaseHelper;
 import com.digimox.utils.DMUtils;
+import com.google.gson.Gson;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Deepesh on 10-Dec-15.
@@ -48,6 +62,10 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
     private String selectedLanguageId;
     private String selectedCurrency;
     private String selectedCurrencyRate;
+    private String currencyId;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RelativeLayout pullLayout;
+    private Handler pullHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +77,7 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
         dmLanguages = dmDataBaseHelper.getLanguageList();
         dmCurrencies = dmDataBaseHelper.getCurrencyList();
         initViews();
+        showPullAnimation();
         setOnClickListener();
 //        showLanguagePopup();
 //        showCurrencyPopup();
@@ -66,7 +85,65 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
         createCurrencyPopUp();
     }
 
+    private void showPullAnimation() {
+        pullLayout = (RelativeLayout) findViewById(R.id.pull_down_layout);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.slide_in_up);
+        animation.setDuration(1000);
+        pullLayout.setVisibility(View.VISIBLE);
+        pullLayout.setAnimation(animation);
+        pullLayout.animate();
+        animation.start();
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                pullHandler.postDelayed(pullRunnable, 2000);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    //Here's a runnable/handler combo
+    private Runnable pullRunnable = new Runnable() {
+        @Override
+        public void run() {
+            pullLayout.clearAnimation();
+            Animation animation = AnimationUtils.loadAnimation(DMMainHomeActivity.this, R.anim.slide_out_up);
+            animation.setDuration(1000);
+            pullLayout.setAnimation(animation);
+            pullLayout.animate();
+            animation.start();
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    pullLayout.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+
+            });
+        }
+    };
+
     private void initViews() {
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setRefreshing(false);
         if (!TextUtils.isEmpty(dmUserDetails.getUserDetailsLogo())) {
             DMUtils.setImageUrlToView(this, ((ImageView) findViewById(R.id.restaurant_logo)),
                     dmUserDetails.getUserDetailsLogo(), ((ProgressBar) findViewById(R.id.progress_restaurant_logo)));
@@ -87,12 +164,14 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
         if (!TextUtils.isEmpty(DMUtils.getCurrencyCode(this))) {
             selectedCurrency = DMUtils.getCurrencyCode(this);
             selectedCurrencyRate = DMUtils.getExchangeRate(this);
+            currencyId = DMUtils.getCurrencyId(this);
             DMUtils.setValueToView(findViewById(R.id.currency_selector), selectedCurrency);
         } else {
             for (DMCurrency dmCurrency : dmCurrencies) {
                 if (dmCurrency.getCurrencyId().equalsIgnoreCase(dmUserDetails.getUser_default_currency())) {
                     selectedCurrency = dmCurrency.getCurrencyCode();
                     selectedCurrencyRate = dmCurrency.getCurrencyExchangeRate();
+                    currencyId = dmCurrency.getCurrencyId();
                     DMUtils.setValueToView(findViewById(R.id.currency_selector), dmCurrency.getCurrencyCode());
                 }
             }
@@ -103,6 +182,78 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
         DMUtils.setValueToView(findViewById(R.id.restaurant_description), dmUserDetails.getRestaurantAbout());
 // DMUtils.setValueToView(findViewById(R.id.restaurant_description), dmUserDetails.getRestaurantAbout() + "\n" + dmUserDetails.getUserDetailsAddress() + "\n" + dmUserDetails.getUserDetailsCity()
 //                + "\n" + dmUserDetails.getUserDetailsState() + "\n" + dmUserDetails.getUserDetailsWebsite() + "\n" + dmUserDetails.getUserDetailsTiming());
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getLanguageList();
+            }
+        });
+    }
+
+    private void getLanguageList() {
+        if (DMUtils.isOnline()) {
+            String url = DMApiManager.METHOD_LANGUAGE + "uid=" + DMUtils.getUserId(this);
+            DMApiManager dmApiManager = new DMApiManager(this);
+            dmApiManager.get(url, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    super.onSuccess(statusCode, headers, response);
+
+                    try {
+                        ArrayList<DMLanguage> dmLanguages = new ArrayList<DMLanguage>();
+                        Gson gson = new Gson();
+                        for (int i = 0; i < response.length() - 1; i++) {
+                            JSONObject responseJSon = response.getJSONObject(i);
+                            DMLanguage dmLanguage = gson.fromJson(responseJSon.toString(), DMLanguage.class);
+                            dmLanguages.add(dmLanguage);
+                        }
+                        getCurrencyList(dmLanguages);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                }
+            });
+        } else {
+            showToast(getResources().getString(R.string.api_error_no_network));
+        }
+    }
+
+    private void getCurrencyList(final ArrayList<DMLanguage> dmLanguages) {
+        String url = DMApiManager.METHOD_CURRENCY + "uid=" + DMUtils.getUserId(this);
+        DMApiManager dmApiManager = new DMApiManager(this);
+        dmApiManager.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    ArrayList<DMCurrency> dmCurrencies = new ArrayList<DMCurrency>();
+                    Gson gson = new Gson();
+                    for (int i = 0; i < response.length() - 1; i++) {
+                        JSONObject responseJSon = response.getJSONObject(i);
+                        DMCurrency dmCurrency = gson.fromJson(responseJSon.toString(), DMCurrency.class);
+                        dmCurrencies.add(dmCurrency);
+                    }
+                    startHomeView(dmLanguages, dmCurrencies);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void startHomeView(ArrayList<DMLanguage> dmLanguages, ArrayList<DMCurrency> dmCurrencies) {
+        dmDataBaseHelper.openDataBase();
+        dmDataBaseHelper.deleteCurrencyTable();
+        dmDataBaseHelper.deleteLanguageTable();
+        dmDataBaseHelper.insertCurrencyData(dmCurrencies);
+        dmDataBaseHelper.insertLanguageData(dmLanguages);
+        dmDataBaseHelper.close();
+        initViews();
 
     }
 
@@ -112,6 +263,7 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
         findViewById(R.id.go_to_next).setOnClickListener(this);
         findViewById(R.id.feed_back_text).setOnClickListener(this);
         findViewById(R.id.feed_back_img).setOnClickListener(this);
+        findViewById(R.id.home_logout).setOnClickListener(this);
     }
 
     @Override
@@ -139,13 +291,30 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
             case R.id.feed_back_img:
                 goToFeedback();
                 break;
+            case R.id.home_logout:
+                logout();
+                break;
             default:
                 break;
         }
     }
 
+    private void logout() {
+        dmDataBaseHelper.openDataBase();
+        dmDataBaseHelper.deleteUserTable();
+        dmDataBaseHelper.deleteCurrencyTable();
+        dmDataBaseHelper.deleteLanguageTable();
+        dmDataBaseHelper.deleteTable();
+        DMUtils.setUserId(this, "");
+        DMUtils.setLanguageId(this, "");
+        Intent intent = new Intent(this, DMLoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
     private void goToFeedback() {
         DMUtils.setLanguageId(this, selectedLanguageId);
+        DMUtils.setCurrencyCode(this, selectedCurrency);
         Intent homeIntent = new Intent(this, DMHomeActivity.class);
         homeIntent.putExtra("FEEDBACK", true);
         startActivity(homeIntent);
@@ -155,6 +324,7 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
         if (null != DMUtils.getValueFromView(findViewById(R.id.lang_selector))) {
             if (null != DMUtils.getValueFromView(findViewById(R.id.currency_selector))) {
                 DMUtils.setLanguageId(this, selectedLanguageId);
+                DMUtils.setCurrencyId(this, currencyId);
                 DMUtils.setExchangeRate(this, selectedCurrencyRate);
                 DMUtils.setCurrencyCode(this, selectedCurrency);
                 DMUtils.setLanguageName(this, DMUtils.getValueFromView(findViewById(R.id.lang_selector)));
@@ -215,6 +385,7 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
             public boolean onMenuItemClick(MenuItem menuItem) {
                 selectedLanguage = dmLanguages.get(menuItem.getItemId()).getLanguageShort();
                 selectedLanguageId = dmLanguages.get(menuItem.getItemId()).getLanguageId();
+
                 DMUtils.setValueToView(findViewById(R.id.lang_selector), dmLanguages.get(menuItem.getItemId()).getLanguageName());
                 return false;
             }
@@ -232,6 +403,7 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
             public boolean onMenuItemClick(MenuItem menuItem) {
                 selectedCurrency = dmCurrencies.get(menuItem.getItemId()).getCurrencyCode();
                 selectedCurrencyRate = dmCurrencies.get(menuItem.getItemId()).getCurrencyExchangeRate();
+
                 DMUtils.setValueToView(findViewById(R.id.currency_selector), dmCurrencies.get(menuItem.getItemId()).getCurrencyCode());
                 return false;
             }
@@ -317,6 +489,7 @@ public class DMMainHomeActivity extends DMBaseActivity implements View.OnClickLi
                 DMUtils.setValueToView(findViewById(R.id.currency_selector), dmCurrencies.get(position).getCurrencyCode());
                 selectedCurrency = dmCurrencies.get(position).getCurrencyCode();
                 selectedCurrencyRate = dmCurrencies.get(position).getCurrencyExchangeRate();
+                currencyId = dmCurrencies.get(position).getCurrencyId();
                 popupWindow.dismiss();
             }
         });

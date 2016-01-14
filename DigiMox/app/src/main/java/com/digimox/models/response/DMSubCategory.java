@@ -33,148 +33,125 @@ public class DMSubCategory implements Serializable {
     @SerializedName("item_price_usd")
     @Expose
     private String itemPriceUsd;
+    private String id;
 
     /**
-     *
-     * @return
-     * The itemId
+     * @return The itemId
      */
     public String getItemId() {
         return itemId;
     }
 
     /**
-     *
-     * @param itemId
-     * The item_id
+     * @param itemId The item_id
      */
     public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
     /**
-     *
-     * @return
-     * The itemName
+     * @return The itemName
      */
     public String getItemName() {
         return itemName;
     }
 
     /**
-     *
-     * @param itemName
-     * The item_name
+     * @param itemName The item_name
      */
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
 
     /**
-     *
-     * @return
-     * The itemDesc
+     * @return The itemDesc
      */
     public String getItemDesc() {
         return itemDesc;
     }
 
     /**
-     *
-     * @param itemDesc
-     * The item_desc
+     * @param itemDesc The item_desc
      */
     public void setItemDesc(String itemDesc) {
         this.itemDesc = itemDesc;
     }
 
     /**
-     *
-     * @return
-     * The languageId
+     * @return The languageId
      */
     public String getLanguageId() {
         return languageId;
     }
 
     /**
-     *
-     * @param languageId
-     * The language_id
+     * @param languageId The language_id
      */
     public void setLanguageId(String languageId) {
         this.languageId = languageId;
     }
 
     /**
-     *
-     * @return
-     * The itemImage
+     * @return The itemImage
      */
     public String getItemImage() {
         return itemImage;
     }
 
     /**
-     *
-     * @param itemImage
-     * The item_image
+     * @param itemImage The item_image
      */
     public void setItemImage(String itemImage) {
         this.itemImage = itemImage;
     }
 
     /**
-     *
-     * @return
-     * The itemGroupId
+     * @return The itemGroupId
      */
     public String getItemGroupId() {
         return itemGroupId;
     }
 
     /**
-     *
-     * @param itemGroupId
-     * The item_group_id
+     * @param itemGroupId The item_group_id
      */
     public void setItemGroupId(String itemGroupId) {
         this.itemGroupId = itemGroupId;
     }
 
     /**
-     *
-     * @return
-     * The itemPriceUnit
+     * @return The itemPriceUnit
      */
     public String getItemPriceUnit() {
         return itemPriceUnit;
     }
 
     /**
-     *
-     * @param itemPriceUnit
-     * The item_price_unit
+     * @param itemPriceUnit The item_price_unit
      */
     public void setItemPriceUnit(String itemPriceUnit) {
         this.itemPriceUnit = itemPriceUnit;
     }
 
     /**
-     *
-     * @return
-     * The itemPriceUsd
+     * @return The itemPriceUsd
      */
     public String getItemPriceUsd() {
         return itemPriceUsd;
     }
 
     /**
-     *
-     * @param itemPriceUsd
-     * The item_price_usd
+     * @param itemPriceUsd The item_price_usd
      */
     public void setItemPriceUsd(String itemPriceUsd) {
         this.itemPriceUsd = itemPriceUsd;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -49,26 +49,24 @@ public class DMDataBaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery("SELECT * FROM menu_lists", null);
         if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    DMSubCategory dmSubCategory = new DMSubCategory();
-                    dmSubCategory.setItemId(String.valueOf(cursor.getString(0)));
-                    dmSubCategory.setItemName(String.valueOf(cursor.getString(1)));
-                    dmSubCategory.setItemDesc(String.valueOf(cursor.getString(2)));
-                    dmSubCategory.setLanguageId(String.valueOf(cursor.getString(3)));
-                    dmSubCategory.setItemImage(String.valueOf(cursor.getString(4)));
-                    dmSubCategory.setItemGroupId(String.valueOf(cursor.getString(5)));
-                    dmSubCategory.setItemPriceUnit(String.valueOf(cursor.getString(6)));
-                    dmSubCategory.setItemPriceUsd(String.valueOf(cursor.getString(7)));
-                    dmSubCategories.add(dmSubCategory);
-                } while (cursor.moveToNext());
+            while (cursor.moveToNext()) {
+                DMSubCategory dmSubCategory = new DMSubCategory();
+                dmSubCategory.setId(String.valueOf(cursor.getString(0)));
+                dmSubCategory.setItemId(String.valueOf(cursor.getString(1)));
+                dmSubCategory.setItemName(String.valueOf(cursor.getString(2)));
+                dmSubCategory.setItemDesc(String.valueOf(cursor.getString(3)));
+                dmSubCategory.setLanguageId(String.valueOf(cursor.getString(4)));
+                dmSubCategory.setItemImage(String.valueOf(cursor.getString(5)));
+                dmSubCategory.setItemGroupId(String.valueOf(cursor.getString(6)));
+                dmSubCategory.setItemPriceUnit(String.valueOf(cursor.getString(7)));
+                dmSubCategory.setItemPriceUsd(String.valueOf(cursor.getString(8)));
+                dmSubCategories.add(dmSubCategory);
             }
-            cursor.close();
-            db.close();
-            return dmSubCategories;
-
         }
-        return null;
+        cursor.close();
+        db.close();
+        return dmSubCategories;
+
     }
 
     public int getAddedCount() {
@@ -203,24 +201,21 @@ public class DMDataBaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery("SELECT * FROM language_list", null);
         if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    DMLanguage dmLanguage = new DMLanguage();
-                    dmLanguage.setLanguageId(String.valueOf(cursor.getString(0)));
-                    dmLanguage.setLanguageName(String.valueOf(cursor.getString(1)));
-                    dmLanguage.setLanguageShort(String.valueOf(cursor.getString(2)));
-                    dmLanguage.setLanguageStatus(String.valueOf(cursor.getString(3)));
-                    dmLanguage.setLanguageAddedDate(String.valueOf(cursor.getString(4)));
-                    dmLanguage.setLanguageUpdatedDate(String.valueOf(cursor.getString(5)));
-                    dmLanguages.add(dmLanguage);
-                } while (cursor.moveToNext());
+            while (cursor.moveToNext()) {
+                DMLanguage dmLanguage = new DMLanguage();
+                dmLanguage.setLanguageId(String.valueOf(cursor.getString(0)));
+                dmLanguage.setLanguageName(String.valueOf(cursor.getString(1)));
+                dmLanguage.setLanguageShort(String.valueOf(cursor.getString(2)));
+                dmLanguage.setLanguageStatus(String.valueOf(cursor.getString(3)));
+                dmLanguage.setLanguageAddedDate(String.valueOf(cursor.getString(4)));
+                dmLanguage.setLanguageUpdatedDate(String.valueOf(cursor.getString(5)));
+                dmLanguages.add(dmLanguage);
             }
-            cursor.close();
-            db.close();
-            return dmLanguages;
-
         }
-        return null;
+        cursor.close();
+        db.close();
+        return dmLanguages;
+
     }
 
     // Getting single contact
@@ -230,25 +225,23 @@ public class DMDataBaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery("SELECT * FROM currency_list", null);
         if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    DMCurrency dmCurrency = new DMCurrency();
-                    dmCurrency.setCurrencyId(String.valueOf(cursor.getString(0)));
-                    dmCurrency.setCurrencyCode(String.valueOf(cursor.getString(1)));
-                    dmCurrency.setCurrencyCountry(String.valueOf(cursor.getString(2)));
-                    dmCurrency.setCurrencyExchangeRate(String.valueOf(cursor.getString(3)));
-                    dmCurrency.setCurrencyStatus(String.valueOf(cursor.getString(4)));
-                    dmCurrency.setCurrencyAddedDate(String.valueOf(cursor.getString(5)));
-                    dmCurrency.setCurrencyUpdatedDate(String.valueOf(cursor.getString(6)));
-                    dmCurrencies.add(dmCurrency);
-                } while (cursor.moveToNext());
+            while (cursor.moveToNext()) {
+                DMCurrency dmCurrency = new DMCurrency();
+                dmCurrency.setCurrencyId(String.valueOf(cursor.getString(0)));
+                dmCurrency.setCurrencyCode(String.valueOf(cursor.getString(1)));
+                dmCurrency.setCurrencyCountry(String.valueOf(cursor.getString(2)));
+                dmCurrency.setCurrencyExchangeRate(String.valueOf(cursor.getString(3)));
+                dmCurrency.setCurrencyStatus(String.valueOf(cursor.getString(4)));
+                dmCurrency.setCurrencyAddedDate(String.valueOf(cursor.getString(5)));
+                dmCurrency.setCurrencyUpdatedDate(String.valueOf(cursor.getString(6)));
+                dmCurrencies.add(dmCurrency);
             }
-            cursor.close();
-            db.close();
-            return dmCurrencies;
-
         }
-        return null;
+        cursor.close();
+        db.close();
+        return dmCurrencies;
+
+
     }
 
     // Getting single contact
@@ -258,33 +251,30 @@ public class DMDataBaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery("SELECT * FROM user_details", null);
         if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    dmUserDetails.setUserDetailsId(String.valueOf(cursor.getString(0)));
-                    dmUserDetails.setUserFname(String.valueOf(cursor.getString(1)));
-                    dmUserDetails.setUserLname(String.valueOf(cursor.getString(2)));
-                    dmUserDetails.setUserEmail(String.valueOf(cursor.getString(3)));
-                    dmUserDetails.setUserName(String.valueOf(cursor.getString(4)));
-                    dmUserDetails.setUserDetailsRestaurantName(String.valueOf(cursor.getString(5)));
-                    dmUserDetails.setUserDetailsTiming(String.valueOf(cursor.getString(6)));
-                    dmUserDetails.setUserDetailsAddress(String.valueOf(cursor.getString(7)));
-                    dmUserDetails.setUserDetailsCity(String.valueOf(cursor.getString(8)));
-                    dmUserDetails.setUserDetailsState(String.valueOf(cursor.getString(9)));
-                    dmUserDetails.setUserDetailsWebsite(String.valueOf(cursor.getString(10)));
-                    dmUserDetails.setUserDetailsLogo(String.valueOf(cursor.getString(11)));
-                    dmUserDetails.setRestaurantAbout(String.valueOf(cursor.getString(12)));
-                    dmUserDetails.setUser_details_currency_id(String.valueOf(cursor.getString(13)));
-                    dmUserDetails.setUser_default_currency(String.valueOf(cursor.getString(14)));
-                    dmUserDetails.setUser_default_language(String.valueOf(cursor.getString(15)));
-                    dmUserDetails.setUser_details_language_id(String.valueOf(cursor.getString(16)));
-                } while (cursor.moveToNext());
+            while (cursor.moveToNext()) {
+                dmUserDetails.setUserDetailsId(String.valueOf(cursor.getString(0)));
+                dmUserDetails.setUserFname(String.valueOf(cursor.getString(1)));
+                dmUserDetails.setUserLname(String.valueOf(cursor.getString(2)));
+                dmUserDetails.setUserEmail(String.valueOf(cursor.getString(3)));
+                dmUserDetails.setUserName(String.valueOf(cursor.getString(4)));
+                dmUserDetails.setUserDetailsRestaurantName(String.valueOf(cursor.getString(5)));
+                dmUserDetails.setUserDetailsTiming(String.valueOf(cursor.getString(6)));
+                dmUserDetails.setUserDetailsAddress(String.valueOf(cursor.getString(7)));
+                dmUserDetails.setUserDetailsCity(String.valueOf(cursor.getString(8)));
+                dmUserDetails.setUserDetailsState(String.valueOf(cursor.getString(9)));
+                dmUserDetails.setUserDetailsWebsite(String.valueOf(cursor.getString(10)));
+                dmUserDetails.setUserDetailsLogo(String.valueOf(cursor.getString(11)));
+                dmUserDetails.setRestaurantAbout(String.valueOf(cursor.getString(12)));
+                dmUserDetails.setUser_details_currency_id(String.valueOf(cursor.getString(13)));
+                dmUserDetails.setUser_default_currency(String.valueOf(cursor.getString(14)));
+                dmUserDetails.setUser_default_language(String.valueOf(cursor.getString(15)));
+                dmUserDetails.setUser_details_language_id(String.valueOf(cursor.getString(16)));
             }
-            cursor.close();
-            db.close();
-            return dmUserDetails;
-
         }
-        return null;
+        cursor.close();
+        db.close();
+        return dmUserDetails;
+
     }
 
     public void deleteTable() {
@@ -295,7 +285,7 @@ public class DMDataBaseHelper extends SQLiteOpenHelper {
 
     public void deleteRecord(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String whereClause = "item_id" + "=?";
+        String whereClause = "id" + "=?";
         String[] whereArgs = new String[]{String.valueOf(id)};
         db.delete(TABLE_NAME, whereClause, whereArgs);
         db.close();

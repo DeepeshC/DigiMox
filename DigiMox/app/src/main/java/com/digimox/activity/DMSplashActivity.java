@@ -79,6 +79,11 @@ public class DMSplashActivity extends DMBaseActivity {
                         e.printStackTrace();
                     }
                 }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                }
             });
         } else {
             showToast(getResources().getString(R.string.api_error_no_network));

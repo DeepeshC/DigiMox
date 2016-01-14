@@ -173,7 +173,7 @@ public class DMSelectedItemAdapter extends RecyclerView.Adapter<DMSelectedItemAd
 
         DMDataBaseHelper dmDataBaseHelper = new DMDataBaseHelper(context);
         dmDataBaseHelper.openDataBase();
-        dmDataBaseHelper.deleteRecord(dmSubCategory.getItemId());
+        dmDataBaseHelper.deleteRecord(dmSubCategory.getId());
         dmSelectedMenuFragment.setMenuCount();
         dmSubCategories.remove(position);
         for (DMSubCategory subCategory : dmSubCategories) {

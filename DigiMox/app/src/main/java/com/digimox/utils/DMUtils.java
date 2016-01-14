@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -21,7 +22,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -224,6 +224,22 @@ public class DMUtils {
         return preferences.getString("LANGUAGE_ID", "");
     }
 
+    public static synchronized void setCurrencyId(Context context, String languageId) {
+
+        SharedPreferences preferences = context.getSharedPreferences("CURRENCY_ID",
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("CURRENCY_ID", languageId).apply();
+    }
+
+    public static String getCurrencyId(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences("CURRENCY_ID",
+                Context.MODE_PRIVATE);
+
+        return preferences.getString("CURRENCY_ID", "");
+    }
+
     public static synchronized void setCurrencyCode(Context context, String currencyId) {
 
         SharedPreferences preferences = context.getSharedPreferences("CURRENCY_CODE",
@@ -246,7 +262,7 @@ public class DMUtils {
         SharedPreferences.Editor editor = preferences.edit();
 
 
-        editor.putString("LANGUAGE", language).commit();
+        editor.putString("LANGUAGE", language).apply();
     }
 
     public static String getLanguage(Context context) {
@@ -278,7 +294,7 @@ public class DMUtils {
         SharedPreferences.Editor editor = preferences.edit();
 
 
-        editor.putString("EXCHANGE_RATE", exchangeRate).commit();
+        editor.putString("EXCHANGE_RATE", exchangeRate).apply();
     }
 
     public static String getExchangeRate(Context context) {
@@ -329,6 +345,7 @@ public class DMUtils {
     }
 
     public static String getFormattedCurrencyString(String isoCurrencyCode, double amount) {
+        Log.d("CURRENCY CODE", isoCurrencyCode);
         // This formats currency values as the user expects to read them (default locale).
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
@@ -352,12 +369,38 @@ public class DMUtils {
         return currencyFormat.format(amount);
     }
 
+    /**
+     * Gets the screen width.
+     *
+     * @param context the context
+     * @return the screen width
+     */
+    public static int getScreenWidth(Context context) {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay()
+                .getMetrics(displaymetrics);
+        return displaymetrics.widthPixels;
+    }
+
+    /**
+     * Gets the screen height.
+     *
+     * @param context the context
+     * @return the screen height
+     */
+    public static int getScreenHeight(Context context) {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay()
+                .getMetrics(displaymetrics);
+        return displaymetrics.heightPixels;
+    }
+
     public static void showImageDialog(Context context, String imageUrl) {
         Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.item_image_dialog);
-        dialog.getWindow().getAttributes().width = RelativeLayout.LayoutParams.WRAP_CONTENT;
-        dialog.getWindow().getAttributes().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().getAttributes().width = getScreenWidth(context);
+        dialog.getWindow().getAttributes().height = getScreenHeight(context) / 2;
         DMTouchImageView itemImage = (DMTouchImageView) dialog.findViewById(R.id.dialog_item_image);
         itemImage.setMaxZoom(4f);
         DMUtils.setImageUrlToView(context, itemImage, imageUrl, ((ProgressBar) dialog.findViewById(R.id.dialog_item_progress)));

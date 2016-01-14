@@ -10,4 +10,6 @@
     <dimen name="middle_text">14sp</dimen>
     <dimen name="rating_text">15sp</dimen>
     <dimen name="feedback_qu_text">16sp</dimen>
+    <dimen name="selected_item_number_size">15dp</dimen>
+    <dimen name="selected_item_number_text_size">10dp</dimen>
 </resources>

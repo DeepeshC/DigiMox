@@ -167,7 +167,9 @@ public class DMHomeActivity extends DMBaseActivity {
 
     private void showSelectedListView() {
         final android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        if (null != fm) {
+        DMBaseFragment baseFragment = getActiveFragment();
+
+        if (null != fm && !(baseFragment instanceof DMSelectedMenuFragment)) {
             isNeedRefresh = true;
             DMSelectedMenuFragment dmSelectedMenuFragment = new DMSelectedMenuFragment();
             dmSelectedMenuFragment.setDmSubCategories(dmSubCategories);
@@ -342,7 +344,11 @@ public class DMHomeActivity extends DMBaseActivity {
     };
 
     public void popStack() {
-        getSupportFragmentManager().popBackStack();
+        getSupportFragmentManager().popBackStackImmediate();
+        if (getFragmentCount() == 1) {
+            hideBackArrow();
+        }
+
     }
 
     @Override

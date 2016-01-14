@@ -22,6 +22,8 @@ import com.digimox.activity.DMHomeActivity;
 import com.digimox.adapters.DMSubCategoryAdapter;
 import com.digimox.api.DMApiManager;
 import com.digimox.app.DMAppConstants;
+import com.digimox.models.response.DMCurrency;
+import com.digimox.models.response.DMLanguage;
 import com.digimox.models.response.DMMainCategory;
 import com.digimox.models.response.DMSubCategory;
 import com.digimox.utils.DMDataBaseHelper;
@@ -89,7 +91,8 @@ public class DMSubCategoryFragment extends DMBaseFragment {
     public void getSubCategory() {
         if (DMUtils.isOnline()) {
             view.findViewById(R.id.progress_pager).setVisibility(View.VISIBLE);
-            String url = DMApiManager.METHOD_SUB_CATEGORY + "gid=" + dmMainCategory.getGroupId() + "&lid=" + DMUtils.getLanguageId(fragmentActivity);
+            String url = DMApiManager.METHOD_SUB_CATEGORY + "gid=" + dmMainCategory.getGroupId()
+                    + "&lid=" + DMUtils.getLanguageId(fragmentActivity) + "&curid=" + DMUtils.getCurrencyId(fragmentActivity);
             DMApiManager dmApiManager = new DMApiManager(fragmentActivity);
             dmApiManager.get(url, new JsonHttpResponseHandler() {
                 @Override
@@ -144,6 +147,68 @@ public class DMSubCategoryFragment extends DMBaseFragment {
         });
     }
 
+//    private void getLanguageList() {
+//        if (DMUtils.isOnline()) {
+//            requestDidStart();
+//            String url = DMApiManager.METHOD_LANGUAGE + "uid=" + DMUtils.getUserId(getActivity());
+//            DMApiManager dmApiManager = new DMApiManager(getActivity());
+//            dmApiManager.get(url, new JsonHttpResponseHandler() {
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                    super.onSuccess(statusCode, headers, response);
+//
+//                    try {
+//                        ArrayList<DMLanguage> dmLanguages = new ArrayList<DMLanguage>();
+//                        Gson gson = new Gson();
+//                        for (int i = 0; i < response.length() - 1; i++) {
+//                            JSONObject responseJSon = response.getJSONObject(i);
+//                            DMLanguage dmLanguage = gson.fromJson(responseJSon.toString(), DMLanguage.class);
+//                            dmLanguages.add(dmLanguage);
+//                        }
+//                        getCurrencyList(dmLanguages);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//        } else {
+//            showToast(getResources().getString(R.string.api_error_no_network));
+//        }
+//    }
+//
+//    private void getCurrencyList(final ArrayList<DMLanguage> dmLanguages) {
+//        String url = DMApiManager.METHOD_CURRENCY + "uid=" + DMUtils.getUserId(getActivity());
+//        DMApiManager dmApiManager = new DMApiManager(getActivity());
+//        dmApiManager.get(url, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                super.onSuccess(statusCode, headers, response);
+//                requestDidFinish();
+//                try {
+//                    ArrayList<DMCurrency> dmCurrencies = new ArrayList<DMCurrency>();
+//                    Gson gson = new Gson();
+//                    for (int i = 0; i < response.length() - 1; i++) {
+//                        JSONObject responseJSon = response.getJSONObject(i);
+//                        DMCurrency dmCurrency = gson.fromJson(responseJSon.toString(), DMCurrency.class);
+//                        dmCurrencies.add(dmCurrency);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
+
+    private void startHomeView(ArrayList<DMLanguage> dmLanguages, ArrayList<DMCurrency> dmCurrencies) {
+        dmDataBaseHelper = new DMDataBaseHelper(getActivity());
+        dmDataBaseHelper.openDataBase();
+        dmDataBaseHelper.deleteCurrencyTable();
+        dmDataBaseHelper.deleteLanguageTable();
+        dmDataBaseHelper.insertCurrencyData(dmCurrencies);
+        dmDataBaseHelper.insertLanguageData(dmLanguages);
+        dmDataBaseHelper.close();
+    }
+
     public void setRefresh() {
         getSubCategory();
     }
@@ -189,26 +254,26 @@ public class DMSubCategoryFragment extends DMBaseFragment {
     }
 
     public void addToDb(ImageView imageView, TextView textView, DMSubCategory dmSubCategory) {
-        if (dmDataBaseHelper.hasObject(dmSubCategory.getItemId())) {
+//        if (dmDataBaseHelper.hasObject(dmSubCategory.getItemId())) {
+//            if (isAdded()) {
+//                showToast(getResources().getString(R.string.already_added));
+//            }
+//        } else {
+        try {
+            dmDataBaseHelper.insertData(dmSubCategory);
+            if (isAdded()) {
+                imageView.setImageResource(R.drawable.select_menu_icon_selected);
+                textView.setText(getResources().getString(R.string.selected));
+                textView.setTextColor(getColor(getActivity(), R.color.green_bg));
+            }
+            ((DMHomeActivity) fragmentActivity).showListButton();
+        } catch (Exception e) {
+            e.printStackTrace();
             if (isAdded()) {
                 showToast(getResources().getString(R.string.already_added));
             }
-        } else {
-            try {
-                dmDataBaseHelper.insertData(dmSubCategory);
-                if (isAdded()) {
-                    imageView.setImageResource(R.drawable.select_menu_icon_selected);
-                    textView.setText(getResources().getString(R.string.selected));
-                    textView.setTextColor(getColor(getActivity(), R.color.green_bg));
-                }
-                ((DMHomeActivity) fragmentActivity).showListButton();
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (isAdded()) {
-                    showToast(getResources().getString(R.string.already_added));
-                }
-            }
         }
+//        }
     }
 
     public static final int getColor(Context context, int id) {

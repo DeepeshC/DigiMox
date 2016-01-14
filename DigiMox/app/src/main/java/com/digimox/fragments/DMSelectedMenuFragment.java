@@ -101,8 +101,8 @@ public class DMSelectedMenuFragment extends DMBaseFragment implements View.OnCli
     public void setMenuCount() {
         dmDataBaseHelper = new DMDataBaseHelper(getActivity());
         dmDataBaseHelper.openDataBase();
-        dmDataBaseHelper.getAddedCount();
-        int count = dmDataBaseHelper.getAddedCount();
+        dmSubCategories = dmDataBaseHelper.getAddedList();
+        int count = dmSubCategories.size();
         ((DMHomeActivity) getActivity()).setMeuCount(String.valueOf(count));
         dmDataBaseHelper.close();
         if (count == 0) {
@@ -129,6 +129,7 @@ public class DMSelectedMenuFragment extends DMBaseFragment implements View.OnCli
         }
 
     }
+
     public void showItemDetails(DMSubCategory dmSubCategory) {
         if (null != getActivity()) {
             final android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();

@@ -31,6 +31,17 @@ public class DMBaseActivity extends AppCompatActivity {
         return (DMBaseFragment) getSupportFragmentManager().findFragmentByTag(tag);
     }
 
+    public int getFragmentCount() {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        if (null == fragmentManager) {
+            return 0;
+        }
+        if (fragmentManager.getBackStackEntryCount() == 0) {
+            return 0;
+        }
+        return fragmentManager.getBackStackEntryCount();
+    }
+
     public DMBaseFragment getFragment() {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         if (null == fragmentManager) {

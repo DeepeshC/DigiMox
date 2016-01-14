@@ -70,7 +70,8 @@ public class DMItemDetailFragment extends DMBaseFragment implements View.OnClick
     private void getMenuDetail() {
         if (DMUtils.isOnline()) {
             detailView.findViewById(R.id.progress_pager_menu).setVisibility(View.VISIBLE);
-            String url = DMApiManager.METHOD_DETAIL + "itemid=" + dmSubCategory.getItemId() + "&lid=" + DMUtils.getLanguageId(getActivity());
+            String url = DMApiManager.METHOD_DETAIL + "itemid=" + dmSubCategory.getItemId()
+                    + "&lid=" + DMUtils.getLanguageId(getActivity()) + "&curid=" + DMUtils.getCurrencyId(fragmentActivity);
             DMApiManager dmApiManager = new DMApiManager(fragmentActivity);
             dmApiManager.get(url, new JsonHttpResponseHandler() {
                 @Override
@@ -159,24 +160,24 @@ public class DMItemDetailFragment extends DMBaseFragment implements View.OnClick
     }
 
     public void addToDb(DMSubCategory dmSubCategory) {
-        if (dmDataBaseHelper.hasObject(dmSubCategory.getItemId())) {
+//        if (dmDataBaseHelper.hasObject(dmSubCategory.getItemId())) {
+//            if (isAdded()) {
+//                showToast(getResources().getString(R.string.already_added));
+//            }
+//        } else {
+        try {
+            ((DMHomeActivity) getActivity()).isNeedRefresh = true;
             if (isAdded()) {
-                showToast(getResources().getString(R.string.already_added));
+                ((ImageView) detailView.findViewById(R.id.add_list_img)).setImageResource(R.drawable.select_menu_icon_selected);
+                ((TextView) detailView.findViewById(R.id.add_list)).setText(getResources().getString(R.string.selected));
+                ((TextView) detailView.findViewById(R.id.add_list)).setTextColor(getColor(getActivity(), R.color.green_bg));
             }
-        } else {
-            try {
-                ((DMHomeActivity) getActivity()).isNeedRefresh = true;
-                if (isAdded()) {
-                    ((ImageView) detailView.findViewById(R.id.add_list_img)).setImageResource(R.drawable.select_menu_icon_selected);
-                    ((TextView) detailView.findViewById(R.id.add_list)).setText(getResources().getString(R.string.selected));
-                    ((TextView) detailView.findViewById(R.id.add_list)).setTextColor(getColor(getActivity(), R.color.green_bg));
-                }
-                dmDataBaseHelper.insertData(dmSubCategory);
-                ((DMHomeActivity) fragmentActivity).showListButton();
-            } catch (Exception e) {
-                e.printStackTrace();
+            dmDataBaseHelper.insertData(dmSubCategory);
+            ((DMHomeActivity) fragmentActivity).showListButton();
+        } catch (Exception e) {
+            e.printStackTrace();
 
-            }
         }
+//        }
     }
 }

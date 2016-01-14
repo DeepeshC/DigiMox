@@ -35,10 +35,17 @@ public class DMApiManager {
      * @return an async client when calling from the main thread, otherwise a sync client.
      */
     private static AsyncHttpClient getClient() {
+
         // Return the synchronous HTTP client when the thread is not prepared
-        if (Looper.myLooper() == null)
+        if (Looper.myLooper() == null) {
+            syncHttpClient.setTimeout(15 * 1000);
+            syncHttpClient.setMaxRetriesAndTimeout(1, 15 * 1000);
             return syncHttpClient;
-        return asyncHttpClient;
+        } else {
+            asyncHttpClient.setTimeout(15 * 1000);
+            asyncHttpClient.setMaxRetriesAndTimeout(1, 15 * 1000);
+            return asyncHttpClient;
+        }
     }
 
     public void get(String url, AsyncHttpResponseHandler responseHandler) {
