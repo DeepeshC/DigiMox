@@ -9,7 +9,7 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -76,7 +76,7 @@ public class DMUtils {
 
     public static boolean isOnline() {
         ConnectivityManager cm =
-                (ConnectivityManager) DMApplication.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) DMApplication.Companion.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo mobileInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 

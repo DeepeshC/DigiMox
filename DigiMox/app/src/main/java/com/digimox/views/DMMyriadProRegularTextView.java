@@ -23,18 +23,18 @@ public class DMMyriadProRegularTextView extends TextView {
 
     private void setFont(Context context) {
         if (!isInEditMode()) {
-            synchronized (DMCache.getSharedLRCache().getFontCache()) {
+            synchronized (DMCache.Companion.getSharedLRCache().getFontCache()) {
 
-                if (!DMCache.getSharedLRCache().getFontCache()
+                if (!DMCache.Companion.getSharedLRCache().getFontCache()
                         .containsKey("MyriadPro-Regular")) {
 
                     Typeface tf = Typeface.createFromAsset(context.getAssets(),
                             "font/MyriadPro-Regular.otf");
-                    DMCache.getSharedLRCache().setFontCache("MyriadPro-Regular", tf);
+                    DMCache.Companion.getSharedLRCache().setFontCache("MyriadPro-Regular", tf);
                 }
 
                 setTypeface(
-                        DMCache.getSharedLRCache().getFontCache().get("MyriadPro-Regular"),
+                        DMCache.Companion.getSharedLRCache().getFontCache().get("MyriadPro-Regular"),
                         Typeface.NORMAL);
 
             }

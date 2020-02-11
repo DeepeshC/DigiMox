@@ -15,18 +15,18 @@ public class DMMyriadProBoldTextView extends TextView {
         super(context);
 
         if (!isInEditMode()) {
-            synchronized (DMCache.getSharedLRCache().getFontCache()) {
+            synchronized (DMCache.Companion.getSharedLRCache().getFontCache()) {
 
-                if (!DMCache.getSharedLRCache().getFontCache()
+                if (!DMCache.Companion.getSharedLRCache().getFontCache()
                         .containsKey("MyriadPro-Bold")) {
 
                     Typeface tf = Typeface.createFromAsset(context.getAssets(),
                             "font/MyriadPro-Bold.otf");
-                    DMCache.getSharedLRCache().setFontCache("MyriadPro-Bold", tf);
+                    DMCache.Companion.getSharedLRCache().setFontCache("MyriadPro-Bold", tf);
                 }
 
                 setTypeface(
-                        DMCache.getSharedLRCache().getFontCache().get("MyriadPro-Bold"),
+                        DMCache.Companion.getSharedLRCache().getFontCache().get("MyriadPro-Bold"),
                         Typeface.BOLD);
 
             }
@@ -38,18 +38,18 @@ public class DMMyriadProBoldTextView extends TextView {
         super(context, attrs);
 
         if (!isInEditMode()) {
-            synchronized (DMCache.getSharedLRCache().getFontCache()) {
+            synchronized (DMCache.Companion.getSharedLRCache().getFontCache()) {
 
-                if (!DMCache.getSharedLRCache().getFontCache()
+                if (!DMCache.Companion.getSharedLRCache().getFontCache()
                         .containsKey("MyriadPro-Bold")) {
 
                     Typeface tf = Typeface.createFromAsset(context.getAssets(),
                             "font/MyriadPro-Bold.otf");
-                    DMCache.getSharedLRCache().setFontCache("MyriadPro-Bold", tf);
+                    DMCache.Companion.getSharedLRCache().setFontCache("MyriadPro-Bold", tf);
                 }
 
                 setTypeface(
-                        DMCache.getSharedLRCache().getFontCache().get("MyriadPro-Bold"),
+                        DMCache.Companion.getSharedLRCache().getFontCache().get("MyriadPro-Bold"),
                         Typeface.BOLD);
 
             }

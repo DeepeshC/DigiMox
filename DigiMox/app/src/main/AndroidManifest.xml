@@ -45,6 +45,7 @@
             android:name=".activity.DMFeedbackActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name" />
+        <activity android:name=".activity.DMBaseActivity" />
     </application>
 
 </manifest>
